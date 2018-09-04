@@ -2,6 +2,7 @@
  * Project: V-USB, virtual USB port for Atmel's(r) AVR(r) microcontrollers
  * Author: Christian Starkjohann
  * Creation Date: 2007-06-13
+ * Updated: 2018-04-09
  * Tabsize: 4
  * Copyright: (c) 2007 by OBJECTIVE DEVELOPMENT Software GmbH
  * License: GNU GPL v2 (see License.txt), GNU GPL v3 or proprietary (CommercialLicense.txt)
@@ -14,6 +15,7 @@ general code (preprocessor acrobatics and CRC computation) and then includes
 the file appropriate for the given clock rate.
 */
 
+#undef __SFR_OFFSET
 #define __SFR_OFFSET 0      /* used by avr-libc's register definitions */
 #include "usbportability.h"
 #include "usbdrv.h"         /* for common defs */
@@ -69,8 +71,8 @@ the file appropriate for the given clock rate.
     .global usbCrc16Append
 #endif /* __IAR_SYSTEMS_ASM__ */
 
-
-#if USB_INTR_PENDING < 0x40 /* This is an I/O address, use in and out */
+/* This is an I/O address, use in and out */
+#if((0x3A) + 0x20) < 0x40
 #   define  USB_LOAD_PENDING(reg)   in reg, USB_INTR_PENDING
 #   define  USB_STORE_PENDING(reg)  out USB_INTR_PENDING, reg
 #else   /* It's a memory address, use lds and sts */
